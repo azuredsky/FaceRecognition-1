@@ -27,6 +27,8 @@ public:
 
 	std::vector<cv::Mat> getAlignFaces(cv::Mat img, std::vector<cv::Rect> rects, vector<vector<Point2d>>& points);
 
+	std::vector<cv::Rect> faceDectectRect(cv::Mat img, double minFaceSize = 30);
+
 private:
 
 	MTCNNFaceDetection::MTCNN *cascade;

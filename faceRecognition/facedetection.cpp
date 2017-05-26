@@ -30,7 +30,36 @@ std::vector<cv::Rect> FaceDetection::faceDetect(cv::Mat img, double minFaceSize,
 
 	//auto result = cascade->GetDetectionRect(img, 12 / minFaceSize);
 	auto result = cascade->GetDetection(img, 12 / minFaceSize, output_points, points);
-	for (int i = 0; i < result.size(); i++) {
+	for (int i = 0; i < result.size(); i++) 
+	{
+		//rectangle(img, result[i].first, Scalar(255, 0, 0), 2);
+		//MTCNN检测到的人脸框太小，外扩一下0.1倍
+		result[i].first.x = result[i].first.x - result[i].first.width * 0.1;
+		result[i].first.y = result[i].first.y - result[i].first.height * 0.05;
+		result[i].first.width = result[i].first.width * 1.2;
+		result[i].first.height = result[i].first.height * 1.1;
+		//判断有没有越界
+		if (result[i].first.x  < 0) result[i].first.x = 0;
+		if (result[i].first.y  < 0) result[i].first.y = 0;
+		if (result[i].first.x + result[i].first.width > img.cols)
+			result[i].first.width = img.cols - result[i].first.x;
+		if (result[i].first.y + result[i].first.height > img.rows)
+			result[i].first.height = img.rows - result[i].first.y;
+
+		rects.push_back(result[i].first);
+	}
+
+	return rects;
+}
+
+std::vector<cv::Rect> FaceDetection::faceDectectRect(cv::Mat img, double minFaceSize)
+{
+	std::vector<cv::Rect> rects;
+
+	auto result = cascade->GetDetectionRect(img, 12 / minFaceSize);
+	//auto result = cascade->GetDetection(img, 12 / minFaceSize, output_points, points);
+	for (int i = 0; i < result.size(); i++)
+	{
 		//rectangle(img, result[i].first, Scalar(255, 0, 0), 2);
 		//MTCNN检测到的人脸框太小，外扩一下0.1倍
 		result[i].first.x = result[i].first.x - result[i].first.width * 0.1;
